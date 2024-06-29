@@ -1,0 +1,10 @@
+Multiple Redis for Spring Boot Starter
+Copyright (c) 2020 Yookue Ltd. All rights reserved.
+https://yookue.com
+
+Replace annotation of
+    @org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession
+to
+    @com.yookue.springstarter.multipleredis.annotation.EnableMultipleRedisHttpSession
+
+Note: especially specify the 'redisConnection' attribute.

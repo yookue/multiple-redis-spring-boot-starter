@@ -1,0 +1,9 @@
+Multiple Redis for Spring Boot Starter
+Copyright (c) 2020 Yookue Ltd. All rights reserved.
+https://yookue.com
+
+# spring.autoconfigure.exclude ('+' means better, '-' means must)
+- org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+- org.springframework.boot.autoconfigure.data.redis.RedisReactiveAutoConfiguration
+- org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration
++ org.springframework.session.data.redis.config.annotation.web.http.RedisHttpSessionConfiguration
