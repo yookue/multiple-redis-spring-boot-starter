@@ -17,7 +17,8 @@
 package com.yookue.springstarter.multipleredis.registrar;
 
 
-import javax.annotation.Nonnull;
+import java.time.Duration;
+import jakarta.annotation.Nonnull;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -72,7 +73,7 @@ public class MultipleRedisHttpSessionRegistrar extends RedisHttpSessionConfigura
             return;
         }
         redisConnection = attributes.getEnum("redisConnection");    // $NON-NLS-1$
-        super.setMaxInactiveIntervalInSeconds(attributes.getNumber("maxInactiveIntervalInSeconds"));    // $NON-NLS-1$
+        super.setMaxInactiveInterval(Duration.ofSeconds(attributes.getNumber("maxInactiveInterval")));    // $NON-NLS-1$
         String redisNamespace = attributes.getString("redisNamespace");    // $NON-NLS-1$
         if (StringUtils.hasText(redisNamespace)) {
             StringValueResolver resolver = ReflectionUtilsWraps.getFieldAs(RedisHttpSessionConfiguration.class, "embeddedValueResolver", true, this, StringValueResolver.class);    // $NON-NLS-1$
@@ -82,27 +83,15 @@ public class MultipleRedisHttpSessionRegistrar extends RedisHttpSessionConfigura
         }
         super.setFlushMode(attributes.getEnum("flushMode"));    // $NON-NLS-1$
         super.setSaveMode(attributes.getEnum("saveMode"));    // $NON-NLS-1$
-        String cleanupCron = attributes.getString("cleanupCron");    // $NON-NLS-1$
-        if (StringUtils.hasText(cleanupCron)) {
-            super.setCleanupCron(cleanupCron);
-        }
         if (redisConnection == null) {
             return;
         }
-        RedisConnectionFactory factory = null;
-        switch (redisConnection) {
-            case PRIMARY:
-                factory = BeanFactoryWraps.getBean(beanFactory, PrimaryRedisAutoConfiguration.CONNECTION_FACTORY, RedisConnectionFactory.class);
-                break;
-            case SECONDARY:
-                factory = BeanFactoryWraps.getBean(beanFactory, SecondaryRedisAutoConfiguration.CONNECTION_FACTORY, RedisConnectionFactory.class);
-                break;
-            case TERTIARY:
-                factory = BeanFactoryWraps.getBean(beanFactory, TertiaryRedisAutoConfiguration.CONNECTION_FACTORY, RedisConnectionFactory.class);
-                break;
-            default:
-                break;
-        }
+        RedisConnectionFactory factory = switch (redisConnection) {
+            case PRIMARY -> BeanFactoryWraps.getBean(beanFactory, PrimaryRedisAutoConfiguration.CONNECTION_FACTORY, RedisConnectionFactory.class);
+            case SECONDARY -> BeanFactoryWraps.getBean(beanFactory, SecondaryRedisAutoConfiguration.CONNECTION_FACTORY, RedisConnectionFactory.class);
+            case TERTIARY -> BeanFactoryWraps.getBean(beanFactory, TertiaryRedisAutoConfiguration.CONNECTION_FACTORY, RedisConnectionFactory.class);
+            default -> null;
+        };
         if (factory != null) {
             ReflectionUtilsWraps.setField(RedisHttpSessionConfiguration.class, "redisConnectionFactory", true, this, redisConnection);    // $NON-NLS-1$
         }

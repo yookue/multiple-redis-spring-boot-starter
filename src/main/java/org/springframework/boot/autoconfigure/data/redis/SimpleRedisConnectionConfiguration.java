@@ -17,8 +17,10 @@
 package org.springframework.boot.autoconfigure.data.redis;
 
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.boot.ssl.SslBundles;
 import org.springframework.data.redis.connection.RedisClusterConfiguration;
 import org.springframework.data.redis.connection.RedisSentinelConfiguration;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
@@ -35,11 +37,15 @@ import com.yookue.commonplexus.springutil.support.SingletonObjectProvider;
 @SuppressWarnings("unused")
 public class SimpleRedisConnectionConfiguration extends RedisConnectionConfiguration {
     public SimpleRedisConnectionConfiguration(@Nonnull RedisProperties properties) {
-        super(properties, SingletonObjectProvider.empty(), SingletonObjectProvider.empty(), SingletonObjectProvider.empty());
+        this(properties, null, null, null, null, null);
     }
 
-    public SimpleRedisConnectionConfiguration(@Nonnull RedisProperties properties, @Nullable RedisStandaloneConfiguration standalone, @Nullable RedisSentinelConfiguration sentinel, @Nullable RedisClusterConfiguration cluster) {
-        super(properties, SingletonObjectProvider.ofNullable(standalone), SingletonObjectProvider.ofNullable(sentinel), SingletonObjectProvider.ofNullable(cluster));
+    public SimpleRedisConnectionConfiguration(@Nonnull RedisProperties properties, @Nullable RedisConnectionDetails details) {
+        this(properties, details, null, null, null, null);
+    }
+
+    public SimpleRedisConnectionConfiguration(@Nonnull RedisProperties properties, @Nullable RedisConnectionDetails details, @Nullable RedisStandaloneConfiguration standalone, @Nullable RedisSentinelConfiguration sentinel, @Nullable RedisClusterConfiguration cluster, @Nullable SslBundles bundles) {
+        super(properties, ObjectUtils.defaultIfNull(details, RedisConfigurationUtils.redisConnectionDetails(properties)), SingletonObjectProvider.ofNullable(standalone), SingletonObjectProvider.ofNullable(sentinel), SingletonObjectProvider.ofNullable(cluster), SingletonObjectProvider.ofNullable(bundles));
     }
 
     @Nonnull

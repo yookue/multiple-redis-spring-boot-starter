@@ -14,21 +14,22 @@
  * limitations under the License.
  */
 
-package com.yookue.springstarter.multipleredis.facade;
+package org.springframework.boot.autoconfigure.data.redis;
 
 
 import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
-import org.springframework.data.redis.core.RedisTemplate;
 
 
 /**
- * Facade interface for customizing {@link org.springframework.data.redis.core.RedisTemplate}
+ * Utilities for {@link org.springframework.boot.autoconfigure.data.redis.RedisConnectionConfiguration}
  *
  * @author David Hsing
- * @see org.springframework.data.redis.core.RedisTemplate
+ * @see org.springframework.boot.autoconfigure.data.redis.RedisConnectionConfiguration
  */
-@FunctionalInterface
-public interface RedisTemplateCustomizer {
-    void customize(@Nonnull RedisTemplate<?, ?> template, @Nullable String... beanNames);
+@SuppressWarnings({"unused", "BooleanMethodIsAlwaysInverted", "UnusedReturnValue"})
+public abstract class RedisConfigurationUtils {
+    @Nonnull
+    public static RedisConnectionDetails redisConnectionDetails(@Nonnull RedisProperties properties) {
+        return new PropertiesRedisConnectionDetails(properties);
+    }
 }

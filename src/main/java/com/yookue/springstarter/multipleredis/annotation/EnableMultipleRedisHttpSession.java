@@ -88,13 +88,5 @@ public @interface EnableMultipleRedisHttpSession {
      *
      * @return the seconds a session can be inactive before expiring
      */
-    int maxInactiveIntervalInSeconds() default MapSession.DEFAULT_MAX_INACTIVE_INTERVAL_SECONDS;
-
-    /**
-     * The cron expression for expired session cleanup job
-     * By default, this runs every minute
-     *
-     * @return the session cleanup cron expression
-     */
-    String cleanupCron() default "0 * * * * *";    // $NON-NLS-1$
+    int maxInactiveInterval() default MapSession.DEFAULT_MAX_INACTIVE_INTERVAL_SECONDS;
 }

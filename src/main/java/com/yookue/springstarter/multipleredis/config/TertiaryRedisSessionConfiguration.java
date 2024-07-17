@@ -17,7 +17,7 @@
 package com.yookue.springstarter.multipleredis.config;
 
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -52,7 +52,7 @@ public class TertiaryRedisSessionConfiguration {
 
     @Bean(name = SESSION_REPOSITORY)
     @ConditionalOnMissingBean(name = SESSION_REPOSITORY, type = "org.springframework.session.SessionRepository")
-    public RedisIndexedSessionRepository sessionRepository(@Qualifier(value = TertiaryRedisAutoConfiguration.OBJECT_REDIS_TEMPLATE) @Nonnull RedisTemplate<Object, Object> template) {
+    public RedisIndexedSessionRepository sessionRepository(@Qualifier(value = TertiaryRedisAutoConfiguration.JSON_REDIS_TEMPLATE) @Nonnull RedisTemplate<String, Object> template) {
         return new RedisIndexedSessionRepository(template);
     }
 }

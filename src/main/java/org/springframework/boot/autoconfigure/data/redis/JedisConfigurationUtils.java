@@ -17,8 +17,10 @@
 package org.springframework.boot.autoconfigure.data.redis;
 
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.boot.ssl.SslBundles;
 import org.springframework.data.redis.connection.RedisClusterConfiguration;
 import org.springframework.data.redis.connection.RedisSentinelConfiguration;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
@@ -34,8 +36,9 @@ import com.yookue.commonplexus.springutil.support.SingletonObjectProvider;
  */
 @SuppressWarnings({"unused", "BooleanMethodIsAlwaysInverted", "UnusedReturnValue"})
 public abstract class JedisConfigurationUtils {
-    public static JedisConnectionFactory redisConnectionFactory(@Nonnull RedisProperties properties, @Nullable RedisStandaloneConfiguration standalone, @Nullable RedisSentinelConfiguration sentinel, @Nullable RedisClusterConfiguration cluster, @Nullable JedisClientConfigurationBuilderCustomizer customizer) {
-        JedisConnectionConfiguration configuration = new JedisConnectionConfiguration(properties, SingletonObjectProvider.ofNullable(standalone), SingletonObjectProvider.ofNullable(sentinel), SingletonObjectProvider.ofNullable(cluster));
+    public static JedisConnectionFactory redisConnectionFactory(@Nonnull RedisProperties properties, @Nullable RedisConnectionDetails details, @Nullable RedisStandaloneConfiguration standalone, @Nullable RedisSentinelConfiguration sentinel, @Nullable RedisClusterConfiguration cluster, @Nullable SslBundles bundles, @Nullable JedisClientConfigurationBuilderCustomizer customizer) {
+        RedisConnectionDetails alias = ObjectUtils.defaultIfNull(details, RedisConfigurationUtils.redisConnectionDetails(properties));
+        JedisConnectionConfiguration configuration = new JedisConnectionConfiguration(properties, SingletonObjectProvider.ofNullable(standalone), SingletonObjectProvider.ofNullable(sentinel), SingletonObjectProvider.ofNullable(cluster), alias, SingletonObjectProvider.ofNullable(bundles));
         return configuration.redisConnectionFactory(SingletonObjectProvider.ofNullable(customizer));
     }
 }

@@ -67,11 +67,12 @@ spring:
 
 ## Requirement
 
-- jdk 1.8+
+- jdk 17+
 
 ## License
 
 This project is under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+
 See the `NOTICE.txt` file for required notices and attributions.
 
 ## Donation

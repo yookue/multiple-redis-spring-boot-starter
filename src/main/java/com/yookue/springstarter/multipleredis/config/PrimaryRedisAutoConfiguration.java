@@ -18,8 +18,8 @@ package com.yookue.springstarter.multipleredis.config;
 
 
 import java.util.Objects;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -33,12 +33,15 @@ import org.springframework.boot.autoconfigure.data.redis.JedisConfigurationUtils
 import org.springframework.boot.autoconfigure.data.redis.LettuceClientConfigurationBuilderCustomizer;
 import org.springframework.boot.autoconfigure.data.redis.LettuceConfigurationUtils;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
+import org.springframework.boot.autoconfigure.data.redis.RedisConfigurationUtils;
+import org.springframework.boot.autoconfigure.data.redis.RedisConnectionDetails;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.boot.autoconfigure.data.redis.RedisReactiveAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.redis.SimpleRedisConnectionConfiguration;
 import org.springframework.boot.autoconfigure.jackson.JacksonProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.ssl.SslBundles;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -81,9 +84,11 @@ import io.lettuce.core.resource.DefaultClientResources;
 public class PrimaryRedisAutoConfiguration {
     public static final String PROPERTIES_PREFIX = "spring.multiple-redis.primary";    // $NON-NLS-1$
     public static final String REDIS_PROPERTIES = "primaryRedisProperties";    // $NON-NLS-1$
+    public static final String CONNECTION_DETAILS = "primaryRedisConnectionDetails";    // $NON-NLS-1$
     public static final String STANDALONE_CONFIGURATION = "primaryRedisStandaloneConfiguration";    // $NON-NLS-1$
     public static final String SENTINEL_CONFIGURATION = "primaryRedisSentinelConfiguration";    // $NON-NLS-1$
     public static final String CLUSTER_CONFIGURATION = "primaryRedisClusterConfiguration";    // $NON-NLS-1$
+    public static final String SSL_BUNDLES = "primaryRedisSslBundles";    // $NON-NLS-1$
     public static final String LETTUCE_CLIENT_CUSTOMIZER = "primaryLettuceClientCustomizer";    // $NON-NLS-1$
     public static final String LETTUCE_CLIENT_RESOURCES = "primaryLettuceClientResources";    // $NON-NLS-1$
     public static final String JEDIS_CLIENT_CUSTOMIZER = "primaryJedisClientCustomizer";    // $NON-NLS-1$
@@ -106,6 +111,14 @@ public class PrimaryRedisAutoConfiguration {
         @ConfigurationProperties(prefix = PROPERTIES_PREFIX)
         public RedisProperties redisProperties() {
             return new RedisProperties();
+        }
+
+        @Primary
+        @Bean(name = CONNECTION_DETAILS)
+        @ConditionalOnBean(name = REDIS_PROPERTIES)
+        @ConditionalOnMissingBean(name = CONNECTION_DETAILS)
+        public RedisConnectionDetails redisConnectionDetails(@Qualifier(value = REDIS_PROPERTIES) @Nonnull RedisProperties properties) {
+            return RedisConfigurationUtils.redisConnectionDetails(properties);
         }
 
         @Primary
@@ -158,12 +171,14 @@ public class PrimaryRedisAutoConfiguration {
         @ConditionalOnBean(name = {REDIS_PROPERTIES, LETTUCE_CLIENT_RESOURCES})
         @ConditionalOnMissingBean(name = CONNECTION_FACTORY, value = RedisConnectionFactory.class)
         public LettuceConnectionFactory redisConnectionFactory(@Qualifier(value = REDIS_PROPERTIES) @Nonnull RedisProperties properties,
+            @Autowired(required = false) @Qualifier(value = CONNECTION_DETAILS) @Nullable RedisConnectionDetails details,
             @Autowired(required = false) @Qualifier(value = STANDALONE_CONFIGURATION) @Nullable RedisStandaloneConfiguration standalone,
             @Autowired(required = false) @Qualifier(value = SENTINEL_CONFIGURATION) @Nullable RedisSentinelConfiguration sentinel,
             @Autowired(required = false) @Qualifier(value = CLUSTER_CONFIGURATION) @Nullable RedisClusterConfiguration cluster,
+            @Autowired(required = false) @Qualifier(value = SSL_BUNDLES) @Nullable SslBundles bundles,
             @Autowired(required = false) @Qualifier(value = LETTUCE_CLIENT_CUSTOMIZER) @Nullable LettuceClientConfigurationBuilderCustomizer customizer,
             @Qualifier(value = LETTUCE_CLIENT_RESOURCES) @Nonnull ClientResources resources) {
-            return LettuceConfigurationUtils.redisConnectionFactory(properties, standalone, sentinel, cluster, customizer, resources);
+            return LettuceConfigurationUtils.redisConnectionFactory(properties, details, standalone, sentinel, cluster, bundles, customizer, resources);
         }
     }
 
@@ -182,11 +197,13 @@ public class PrimaryRedisAutoConfiguration {
         @ConditionalOnBean(name = REDIS_PROPERTIES)
         @ConditionalOnMissingBean(name = CONNECTION_FACTORY, value = RedisConnectionFactory.class)
         public JedisConnectionFactory redisConnectionFactory(@Qualifier(value = REDIS_PROPERTIES) @Nonnull RedisProperties properties,
+            @Autowired(required = false) @Qualifier(value = CONNECTION_DETAILS) @Nullable RedisConnectionDetails details,
             @Autowired(required = false) @Qualifier(value = STANDALONE_CONFIGURATION) @Nullable RedisStandaloneConfiguration standalone,
             @Autowired(required = false) @Qualifier(value = SENTINEL_CONFIGURATION) @Nullable RedisSentinelConfiguration sentinel,
             @Autowired(required = false) @Qualifier(value = CLUSTER_CONFIGURATION) @Nullable RedisClusterConfiguration cluster,
+            @Autowired(required = false) @Qualifier(value = SSL_BUNDLES) @Nullable SslBundles bundles,
             @Autowired(required = false) @Qualifier(value = JEDIS_CLIENT_CUSTOMIZER) @Nullable JedisClientConfigurationBuilderCustomizer customizer) {
-            return JedisConfigurationUtils.redisConnectionFactory(properties, standalone, sentinel, cluster, customizer);
+            return JedisConfigurationUtils.redisConnectionFactory(properties, details, standalone, sentinel, cluster, bundles, customizer);
         }
     }
 
@@ -214,7 +231,6 @@ public class PrimaryRedisAutoConfiguration {
         @ConditionalOnClass(value = ObjectMapper.class)
         @ConditionalOnBean(name = CONNECTION_FACTORY)
         @ConditionalOnMissingBean(name = JSON_REDIS_TEMPLATE)
-        @SuppressWarnings("ConstantConditions")
         public RedisTemplate<String, Object> jsonRedisTemplate(@Qualifier(value = CONNECTION_FACTORY) @Nonnull RedisConnectionFactory factory, @Nonnull ObjectProvider<RedisTemplateCustomizer> customizers, @Nonnull ObjectProvider<JacksonProperties> properties) {
             RedisTemplate<String, Object> template = RedisConfigWraps.jacksonJsonSerializerTemplate(factory, properties.getIfAvailable());
             customizers.orderedStream().filter(Objects::nonNull).forEach(customizer -> customizer.customize(template, JSON_REDIS_TEMPLATE));

@@ -17,7 +17,7 @@
 package com.yookue.springstarter.multipleredis.config;
 
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -49,6 +49,7 @@ import reactor.core.publisher.Flux;
 @ConditionalOnBean(name = SecondaryRedisAutoConfiguration.CONNECTION_FACTORY, value = ReactiveRedisConnectionFactory.class)
 @AutoConfigureAfter(value = {PrimaryRedisReactiveConfiguration.class, SecondaryRedisAutoConfiguration.class})
 @AutoConfigureBefore(value = {RedisAutoConfiguration.class, RedisReactiveAutoConfiguration.class, RedisRepositoriesAutoConfiguration.class})
+@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 public class SecondaryRedisReactiveConfiguration {
     public static final String REACTIVE_REDIS_TEMPLATE = "secondaryReactiveRedisTemplate";    // $NON-NLS-1$
     public static final String REACTIVE_STRING_REDIS_TEMPLATE = "secondaryReactiveStringRedisTemplate";    // $NON-NLS-1$

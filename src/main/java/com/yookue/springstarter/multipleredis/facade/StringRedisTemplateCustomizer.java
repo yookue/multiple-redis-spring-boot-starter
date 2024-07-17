@@ -17,8 +17,8 @@
 package com.yookue.springstarter.multipleredis.facade;
 
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
 
