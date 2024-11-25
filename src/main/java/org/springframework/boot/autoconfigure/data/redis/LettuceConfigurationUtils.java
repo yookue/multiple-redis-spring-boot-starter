@@ -37,9 +37,9 @@ import io.lettuce.core.resource.ClientResources;
  */
 @SuppressWarnings({"unused", "BooleanMethodIsAlwaysInverted", "UnusedReturnValue"})
 public abstract class LettuceConfigurationUtils {
-    public static LettuceConnectionFactory redisConnectionFactory(@Nonnull RedisProperties properties, @Nullable RedisConnectionDetails details, @Nullable RedisStandaloneConfiguration standalone, @Nullable RedisSentinelConfiguration sentinel, @Nullable RedisClusterConfiguration cluster, @Nullable SslBundles bundles, @Nullable LettuceClientConfigurationBuilderCustomizer customizer, @Nonnull ClientResources resources) {
+    public static LettuceConnectionFactory redisConnectionFactory(@Nonnull RedisProperties properties, @Nullable RedisConnectionDetails details, @Nullable RedisStandaloneConfiguration standalone, @Nullable RedisSentinelConfiguration sentinel, @Nullable RedisClusterConfiguration cluster, @Nullable SslBundles bundles, @Nullable LettuceClientConfigurationBuilderCustomizer configCustomizer, @Nullable LettuceClientOptionsBuilderCustomizer optionCustomizer, @Nonnull ClientResources resources) {
         RedisConnectionDetails alias = ObjectUtils.defaultIfNull(details, RedisConfigurationUtils.redisConnectionDetails(properties));
         LettuceConnectionConfiguration configuration = new LettuceConnectionConfiguration(properties, SingletonObjectProvider.ofNullable(standalone), SingletonObjectProvider.ofNullable(sentinel), SingletonObjectProvider.ofNullable(cluster), alias, SingletonObjectProvider.ofNullable(bundles));
-        return configuration.redisConnectionFactory(SingletonObjectProvider.ofNullable(customizer), resources);
+        return configuration.redisConnectionFactory(SingletonObjectProvider.ofNullable(configCustomizer), SingletonObjectProvider.ofNullable(optionCustomizer), resources);
     }
 }

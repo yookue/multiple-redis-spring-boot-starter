@@ -32,6 +32,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.data.redis.JedisClientConfigurationBuilderCustomizer;
 import org.springframework.boot.autoconfigure.data.redis.JedisConfigurationUtils;
 import org.springframework.boot.autoconfigure.data.redis.LettuceClientConfigurationBuilderCustomizer;
+import org.springframework.boot.autoconfigure.data.redis.LettuceClientOptionsBuilderCustomizer;
 import org.springframework.boot.autoconfigure.data.redis.LettuceConfigurationUtils;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.redis.RedisConfigurationUtils;
@@ -88,7 +89,8 @@ public class SecondaryRedisAutoConfiguration {
     public static final String SENTINEL_CONFIGURATION = "secondaryRedisSentinelConfiguration";    // $NON-NLS-1$
     public static final String CLUSTER_CONFIGURATION = "secondaryRedisClusterConfiguration";    // $NON-NLS-1$
     public static final String SSL_BUNDLES = "secondaryRedisSslBundles";    // $NON-NLS-1$
-    public static final String LETTUCE_CLIENT_CUSTOMIZER = "secondaryLettuceClientCustomizer";    // $NON-NLS-1$
+    public static final String LETTUCE_CLIENT_CONFIGURATION_CUSTOMIZER = "secondaryLettuceClientConfigurationCustomizer";    // $NON-NLS-1$
+    public static final String LETTUCE_CLIENT_OPTION_CUSTOMIZER = "secondaryLettuceClientOptionCustomizer";    // $NON-NLS-1$
     public static final String LETTUCE_CLIENT_RESOURCES = "secondaryLettuceClientResources";    // $NON-NLS-1$
     public static final String JEDIS_CLIENT_CUSTOMIZER = "secondaryJedisClientCustomizer";    // $NON-NLS-1$
     public static final String CONNECTION_FACTORY = "secondaryRedisConnectionFactory";    // $NON-NLS-1$
@@ -168,9 +170,10 @@ public class SecondaryRedisAutoConfiguration {
             @Autowired(required = false) @Qualifier(value = SENTINEL_CONFIGURATION) @Nullable RedisSentinelConfiguration sentinel,
             @Autowired(required = false) @Qualifier(value = CLUSTER_CONFIGURATION) @Nullable RedisClusterConfiguration cluster,
             @Autowired(required = false) @Qualifier(value = SSL_BUNDLES) @Nullable SslBundles bundles,
-            @Autowired(required = false) @Qualifier(value = LETTUCE_CLIENT_CUSTOMIZER) @Nullable LettuceClientConfigurationBuilderCustomizer customizer,
+            @Autowired(required = false) @Qualifier(value = LETTUCE_CLIENT_CONFIGURATION_CUSTOMIZER) @Nullable LettuceClientConfigurationBuilderCustomizer configCustomizer,
+            @Autowired(required = false) @Qualifier(value = LETTUCE_CLIENT_OPTION_CUSTOMIZER) @Nullable LettuceClientOptionsBuilderCustomizer optionCustomizer,
             @Qualifier(value = LETTUCE_CLIENT_RESOURCES) @Nonnull ClientResources resources) {
-            return LettuceConfigurationUtils.redisConnectionFactory(properties, details, standalone, sentinel, cluster, bundles, customizer, resources);
+            return LettuceConfigurationUtils.redisConnectionFactory(properties, details, standalone, sentinel, cluster, bundles, configCustomizer, optionCustomizer, resources);
         }
     }
 
