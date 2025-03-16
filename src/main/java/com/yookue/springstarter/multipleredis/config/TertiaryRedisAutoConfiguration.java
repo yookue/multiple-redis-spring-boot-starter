@@ -28,6 +28,7 @@ import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.data.redis.JedisClientConfigurationBuilderCustomizer;
 import org.springframework.boot.autoconfigure.data.redis.JedisConfigurationUtils;
@@ -57,8 +58,10 @@ import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactor
 import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.serializer.RedisSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yookue.commonplexus.springcondition.annotation.ConditionalOnAnyProperties;
+import com.yookue.commonplexus.springutil.util.JacksonRedisWraps;
 import com.yookue.commonplexus.springutil.util.RedisConfigWraps;
 import com.yookue.springstarter.multipleredis.facade.RedisTemplateCustomizer;
 import com.yookue.springstarter.multipleredis.facade.StringRedisTemplateCustomizer;
@@ -95,7 +98,7 @@ public class TertiaryRedisAutoConfiguration {
     public static final String JEDIS_CLIENT_CUSTOMIZER = "tertiaryJedisClientCustomizer";    // $NON-NLS-1$
     public static final String CONNECTION_FACTORY = "tertiaryRedisConnectionFactory";    // $NON-NLS-1$
     public static final String OBJECT_REDIS_TEMPLATE = "tertiaryObjectRedisTemplate";    // $NON-NLS-1$
-    public static final String JSON_REDIS_TEMPLATE = "tertiaryJsonRedisTemplate";    // $NON-NLS-1$
+    public static final String SESSION_REDIS_TEMPLATE = "tertiarySessionRedisTemplate";    // $NON-NLS-1$
     public static final String STRING_REDIS_TEMPLATE = "tertiaryStringRedisTemplate";    // $NON-NLS-1$
 
 
@@ -212,20 +215,21 @@ public class TertiaryRedisAutoConfiguration {
         @Bean(name = OBJECT_REDIS_TEMPLATE)
         @ConditionalOnBean(name = CONNECTION_FACTORY)
         @ConditionalOnMissingBean(name = OBJECT_REDIS_TEMPLATE)
-        public RedisTemplate<Object, Object> objectRedisTemplate(@Qualifier(value = CONNECTION_FACTORY) @Nonnull RedisConnectionFactory factory, @Nonnull ObjectProvider<RedisTemplateCustomizer> customizers) {
+        @ConditionalOnMissingClass(value = "com.fasterxml.jackson.databind.ObjectMapper")
+        public RedisTemplate<Object, Object> classicObjectRedisTemplate(@Qualifier(value = CONNECTION_FACTORY) @Nonnull RedisConnectionFactory factory, @Nonnull ObjectProvider<RedisTemplateCustomizer> customizers) {
             RedisTemplate<Object, Object> template = new RedisAutoConfiguration().redisTemplate(factory);
             customizers.orderedStream().filter(Objects::nonNull).forEach(customizer -> customizer.customize(template, OBJECT_REDIS_TEMPLATE));
             template.afterPropertiesSet();
             return template;
         }
 
-        @Bean(name = JSON_REDIS_TEMPLATE)
-        @ConditionalOnClass(value = ObjectMapper.class)
+        @Bean(name = OBJECT_REDIS_TEMPLATE)
         @ConditionalOnBean(name = CONNECTION_FACTORY)
-        @ConditionalOnMissingBean(name = JSON_REDIS_TEMPLATE)
-        public RedisTemplate<String, Object> jsonRedisTemplate(@Qualifier(value = CONNECTION_FACTORY) @Nonnull RedisConnectionFactory factory, @Nonnull ObjectProvider<RedisTemplateCustomizer> customizers, @Nonnull ObjectProvider<JacksonProperties> properties) {
-            RedisTemplate<String, Object> template = RedisConfigWraps.jacksonJsonSerializerTemplate(factory, properties.getIfAvailable());
-            customizers.orderedStream().filter(Objects::nonNull).forEach(customizer -> customizer.customize(template, JSON_REDIS_TEMPLATE));
+        @ConditionalOnClass(value = ObjectMapper.class)
+        @ConditionalOnMissingBean(name = OBJECT_REDIS_TEMPLATE)
+        public RedisTemplate<Object, Object> jacksonObjectRedisTemplate(@Qualifier(value = CONNECTION_FACTORY) @Nonnull RedisConnectionFactory factory, @Nonnull ObjectProvider<RedisTemplateCustomizer> customizers, @Nonnull ObjectProvider<JacksonProperties> properties) {
+            RedisTemplate<Object, Object> template = JacksonRedisWraps.objectObjectRedisTemplate(factory, properties.getIfAvailable());
+            customizers.orderedStream().filter(Objects::nonNull).forEach(customizer -> customizer.customize(template, OBJECT_REDIS_TEMPLATE));
             template.afterPropertiesSet();
             return template;
         }
@@ -237,6 +241,29 @@ public class TertiaryRedisAutoConfiguration {
             StringRedisTemplate template = new RedisAutoConfiguration().stringRedisTemplate(factory);
             customizers.orderedStream().filter(Objects::nonNull).forEach(customizer -> customizer.customize(template, STRING_REDIS_TEMPLATE));
             template.afterPropertiesSet();
+            return template;
+        }
+
+        @Bean(name = SESSION_REDIS_TEMPLATE)
+        @ConditionalOnBean(name = CONNECTION_FACTORY)
+        @ConditionalOnMissingBean(name = SESSION_REDIS_TEMPLATE)
+        @ConditionalOnMissingClass(value = "com.fasterxml.jackson.databind.ObjectMapper")
+        @SuppressWarnings("DataFlowIssue")
+        public RedisTemplate<String, Object> classicSessionRedisTemplate(@Qualifier(value = CONNECTION_FACTORY) @Nonnull RedisConnectionFactory factory, @Nonnull ObjectProvider<RedisTemplateCustomizer> customizers) {
+            RedisTemplate<String, Object> template = RedisConfigWraps.redisTemplate(factory, RedisSerializer.string(), RedisSerializer.java());
+            customizers.orderedStream().filter(Objects::nonNull).forEach(customizer -> customizer.customize(template, SESSION_REDIS_TEMPLATE));
+            return template;
+        }
+
+        @Bean(name = SESSION_REDIS_TEMPLATE)
+        @ConditionalOnBean(name = CONNECTION_FACTORY)
+        @ConditionalOnClass(value = ObjectMapper.class)
+        @ConditionalOnMissingBean(name = SESSION_REDIS_TEMPLATE)
+        @SuppressWarnings({"DataFlowIssue", "DuplicatedCode"})
+        public RedisTemplate<String, Object> jasksonSessionRedisTemplate(@Qualifier(value = CONNECTION_FACTORY) @Nonnull RedisConnectionFactory factory, @Nonnull ObjectProvider<RedisTemplateCustomizer> customizers, @Nonnull ObjectProvider<JacksonProperties> properties) {
+            RedisSerializer<Object> valueSerializer = JacksonRedisWraps.jsonObjectSerializer(properties.getIfAvailable());
+            RedisTemplate<String, Object> template = RedisConfigWraps.redisTemplate(factory, RedisSerializer.string(), valueSerializer);
+            customizers.orderedStream().filter(Objects::nonNull).forEach(customizer -> customizer.customize(template, SESSION_REDIS_TEMPLATE));
             return template;
         }
     }

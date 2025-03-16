@@ -56,7 +56,7 @@ public class PrimaryRedisSessionConfiguration {
     @Primary
     @Bean(name = SESSION_REPOSITORY)
     @ConditionalOnMissingBean(name = SESSION_REPOSITORY, type = "org.springframework.session.SessionRepository")
-    public RedisIndexedSessionRepository sessionRepository(@Qualifier(value = PrimaryRedisAutoConfiguration.JSON_REDIS_TEMPLATE) @Nonnull RedisTemplate<String, Object> template) {
+    public RedisIndexedSessionRepository sessionRepository(@Qualifier(value = PrimaryRedisAutoConfiguration.SESSION_REDIS_TEMPLATE) @Nonnull RedisTemplate<String, Object> template) {
         return new RedisIndexedSessionRepository(template);
     }
 }
