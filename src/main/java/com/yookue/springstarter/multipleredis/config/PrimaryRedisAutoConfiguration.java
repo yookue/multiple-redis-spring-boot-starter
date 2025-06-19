@@ -122,8 +122,8 @@ public class PrimaryRedisAutoConfiguration {
         @Bean(name = CONNECTION_DETAILS)
         @ConditionalOnBean(name = REDIS_PROPERTIES)
         @ConditionalOnMissingBean(name = CONNECTION_DETAILS)
-        public RedisConnectionDetails redisConnectionDetails(@Qualifier(value = REDIS_PROPERTIES) @Nonnull RedisProperties properties) {
-            return RedisConfigurationUtils.redisConnectionDetails(properties);
+        public RedisConnectionDetails redisConnectionDetails(@Qualifier(value = REDIS_PROPERTIES) @Nonnull RedisProperties properties, @Autowired(required = false) @Qualifier(value = SSL_BUNDLES) @Nullable SslBundles bundles) {
+            return RedisConfigurationUtils.redisConnectionDetails(properties, bundles);
         }
 
         @Primary

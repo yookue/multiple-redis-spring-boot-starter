@@ -18,6 +18,8 @@ package org.springframework.boot.autoconfigure.data.redis;
 
 
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+import org.springframework.boot.ssl.SslBundles;
 
 
 /**
@@ -29,7 +31,7 @@ import jakarta.annotation.Nonnull;
 @SuppressWarnings({"unused", "BooleanMethodIsAlwaysInverted", "UnusedReturnValue"})
 public abstract class RedisConfigurationUtils {
     @Nonnull
-    public static RedisConnectionDetails redisConnectionDetails(@Nonnull RedisProperties properties) {
-        return new PropertiesRedisConnectionDetails(properties);
+    public static RedisConnectionDetails redisConnectionDetails(@Nonnull RedisProperties properties, @Nullable SslBundles bundles) {
+        return new PropertiesRedisConnectionDetails(properties, bundles);
     }
 }

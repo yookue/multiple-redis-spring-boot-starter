@@ -37,7 +37,7 @@ import com.yookue.commonplexus.springutil.support.SingletonObjectProvider;
 @SuppressWarnings({"unused", "BooleanMethodIsAlwaysInverted", "UnusedReturnValue"})
 public abstract class JedisConfigurationUtils {
     public static JedisConnectionFactory redisConnectionFactory(@Nonnull RedisProperties properties, @Nullable RedisConnectionDetails details, @Nullable RedisStandaloneConfiguration standalone, @Nullable RedisSentinelConfiguration sentinel, @Nullable RedisClusterConfiguration cluster, @Nullable SslBundles bundles, @Nullable JedisClientConfigurationBuilderCustomizer customizer) {
-        RedisConnectionDetails alias = ObjectUtils.defaultIfNull(details, RedisConfigurationUtils.redisConnectionDetails(properties));
+        RedisConnectionDetails alias = ObjectUtils.defaultIfNull(details, RedisConfigurationUtils.redisConnectionDetails(properties, bundles));
         JedisConnectionConfiguration configuration = new JedisConnectionConfiguration(properties, SingletonObjectProvider.ofNullable(standalone), SingletonObjectProvider.ofNullable(sentinel), SingletonObjectProvider.ofNullable(cluster), alias, SingletonObjectProvider.ofNullable(bundles));
         return configuration.redisConnectionFactory(SingletonObjectProvider.ofNullable(customizer));
     }

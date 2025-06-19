@@ -45,7 +45,7 @@ public class SimpleRedisConnectionConfiguration extends RedisConnectionConfigura
     }
 
     public SimpleRedisConnectionConfiguration(@Nonnull RedisProperties properties, @Nullable RedisConnectionDetails details, @Nullable RedisStandaloneConfiguration standalone, @Nullable RedisSentinelConfiguration sentinel, @Nullable RedisClusterConfiguration cluster, @Nullable SslBundles bundles) {
-        super(properties, ObjectUtils.defaultIfNull(details, RedisConfigurationUtils.redisConnectionDetails(properties)), SingletonObjectProvider.ofNullable(standalone), SingletonObjectProvider.ofNullable(sentinel), SingletonObjectProvider.ofNullable(cluster), SingletonObjectProvider.ofNullable(bundles));
+        super(properties, ObjectUtils.defaultIfNull(details, RedisConfigurationUtils.redisConnectionDetails(properties, bundles)), SingletonObjectProvider.ofNullable(standalone), SingletonObjectProvider.ofNullable(sentinel), SingletonObjectProvider.ofNullable(cluster), SingletonObjectProvider.ofNullable(bundles));
     }
 
     @Nonnull
