@@ -51,7 +51,6 @@ import reactor.core.publisher.Flux;
 @ConditionalOnBean(name = PrimaryRedisAutoConfiguration.CONNECTION_FACTORY, value = ReactiveRedisConnectionFactory.class)
 @AutoConfigureAfter(value = PrimaryRedisAutoConfiguration.class)
 @AutoConfigureBefore(value = {RedisAutoConfiguration.class, RedisReactiveAutoConfiguration.class, RedisRepositoriesAutoConfiguration.class})
-@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 public class PrimaryRedisReactiveConfiguration {
     public static final String DEFAULT_REACTIVE_REDIS_TEMPLATE = "reactiveRedisTemplate";    // $NON-NLS-1$
     public static final String DEFAULT_REACTIVE_STRING_REDIS_TEMPLATE = "reactiveStringRedisTemplate";    // $NON-NLS-1$
