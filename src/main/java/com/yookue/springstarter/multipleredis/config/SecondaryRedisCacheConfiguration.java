@@ -25,6 +25,7 @@ import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration;
 import org.springframework.boot.autoconfigure.cache.CacheProperties;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBooleanProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -35,7 +36,7 @@ import org.springframework.cache.interceptor.CacheResolver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
-import com.yookue.commonplexus.springcondition.annotation.ConditionalOnAllProperties;
+import com.yookue.commonplexus.springcondition.annotation.ConditionalOnAllBooleanProperties;
 import com.yookue.commonplexus.springutil.util.RedisConfigWraps;
 import com.yookue.springstarter.cacheexpiry.resolver.impl.RedisExpiryCacheResolver;
 
@@ -46,11 +47,11 @@ import com.yookue.springstarter.cacheexpiry.resolver.impl.RedisExpiryCacheResolv
  * @author David Hsing
  */
 @Configuration(proxyBeanMethods = false)
-@ConditionalOnAllProperties(value = {
-    @ConditionalOnProperty(prefix = "spring.multiple-redis", name = "enabled", havingValue = "true", matchIfMissing = true),
-    @ConditionalOnProperty(prefix = "spring.cache", name = "type", havingValue = "redis", matchIfMissing = true),
-    @ConditionalOnProperty(prefix = SecondaryRedisAutoConfiguration.PROPERTIES_PREFIX, name = "cache-enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnAllBooleanProperties(value = {
+    @ConditionalOnBooleanProperty(prefix = "spring.multiple-redis", name = "enabled", matchIfMissing = true),
+    @ConditionalOnBooleanProperty(prefix = SecondaryRedisAutoConfiguration.PROPERTIES_PREFIX, name = "cache-enabled", matchIfMissing = true)
 })
+@ConditionalOnProperty(prefix = "spring.cache", name = "type", havingValue = "redis", matchIfMissing = true)
 @ConditionalOnBean(value = {CacheAspectSupport.class, CacheProperties.class})
 @ConditionalOnClass(value = CacheManager.class)
 @AutoConfigureAfter(value = {CacheAutoConfiguration.class, PrimaryRedisCacheConfiguration.class, SecondaryRedisAutoConfiguration.class})

@@ -20,8 +20,8 @@ package com.yookue.springstarter.multipleredis.config;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBooleanProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.redis.RedisReactiveAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration;
@@ -29,7 +29,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.stereotype.Repository;
-import com.yookue.commonplexus.springcondition.annotation.ConditionalOnAllProperties;
+import com.yookue.commonplexus.springcondition.annotation.ConditionalOnAllBooleanProperties;
 import com.yookue.commonplexus.springcondition.annotation.ConditionalOnAnnotation;
 
 
@@ -39,9 +39,9 @@ import com.yookue.commonplexus.springcondition.annotation.ConditionalOnAnnotatio
  * @author David Hsing
  */
 @Configuration(proxyBeanMethods = false)
-@ConditionalOnAllProperties(value = {
-    @ConditionalOnProperty(prefix = "spring.multiple-redis", name = "enabled", havingValue = "true", matchIfMissing = true),
-    @ConditionalOnProperty(prefix = SecondaryRedisAutoConfiguration.PROPERTIES_PREFIX, name = "repository.enabled", havingValue = "true")
+@ConditionalOnAllBooleanProperties(value = {
+    @ConditionalOnBooleanProperty(prefix = "spring.multiple-redis", name = "enabled", matchIfMissing = true),
+    @ConditionalOnBooleanProperty(prefix = SecondaryRedisAutoConfiguration.PROPERTIES_PREFIX, name = "repository.enabled")
 })
 @ConditionalOnClass(value = RedisOperations.class)
 @ConditionalOnBean(name = SecondaryRedisAutoConfiguration.CONNECTION_FACTORY)

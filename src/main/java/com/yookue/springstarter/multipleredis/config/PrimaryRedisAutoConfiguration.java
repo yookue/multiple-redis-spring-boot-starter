@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBooleanProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
@@ -77,7 +78,7 @@ import io.lettuce.core.resource.DefaultClientResources;
  * @see org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
  */
 @Configuration(proxyBeanMethods = false)
-@ConditionalOnProperty(prefix = "spring.multiple-redis", name = "enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnBooleanProperty(prefix = "spring.multiple-redis", name = "enabled", matchIfMissing = true)
 @ConditionalOnAnyProperties(value = {
     @ConditionalOnProperty(prefix = PrimaryRedisAutoConfiguration.PROPERTIES_PREFIX, name = "url"),
     @ConditionalOnProperty(prefix = PrimaryRedisAutoConfiguration.PROPERTIES_PREFIX, name = "host")

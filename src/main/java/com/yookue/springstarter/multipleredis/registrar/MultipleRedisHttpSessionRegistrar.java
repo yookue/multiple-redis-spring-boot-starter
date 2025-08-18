@@ -24,8 +24,8 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBooleanProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.type.AnnotationMetadata;
@@ -54,7 +54,7 @@ import lombok.Setter;
  * @see com.yookue.springstarter.multipleredis.annotation.EnableMultipleRedisHttpSession
  */
 @Configuration(proxyBeanMethods = false)
-@ConditionalOnProperty(prefix = "spring.multiple-redis", name = "enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnBooleanProperty(prefix = "spring.multiple-redis", name = "enabled", matchIfMissing = true)
 @ConditionalOnClass(value = {RedisOperations.class, SpringSessionRedisOperations.class})
 @AutoConfigureAfter(value = {PrimaryRedisAutoConfiguration.class, SecondaryRedisAutoConfiguration.class, TertiaryRedisAutoConfiguration.class})
 @AutoConfigureBefore(value = RedisHttpSessionConfiguration.class)
@@ -76,7 +76,7 @@ public class MultipleRedisHttpSessionRegistrar extends RedisHttpSessionConfigura
         super.setMaxInactiveInterval(Duration.ofSeconds(attributes.getNumber("maxInactiveInterval")));    // $NON-NLS-1$
         String redisNamespace = attributes.getString("redisNamespace");    // $NON-NLS-1$
         if (StringUtils.hasText(redisNamespace)) {
-            StringValueResolver resolver = ReflectionUtilsWraps.getFieldAs(RedisHttpSessionConfiguration.class, "embeddedValueResolver", true, this, StringValueResolver.class);    // $NON-NLS-1$
+            StringValueResolver resolver = ReflectionUtilsWraps.getFieldAs(this, "embeddedValueResolver", true, StringValueResolver.class);    // $NON-NLS-1$
             if (resolver != null) {
                 super.setRedisNamespace(resolver.resolveStringValue(redisNamespace));
             }
@@ -93,7 +93,7 @@ public class MultipleRedisHttpSessionRegistrar extends RedisHttpSessionConfigura
             default -> null;
         };
         if (factory != null) {
-            ReflectionUtilsWraps.setField(RedisHttpSessionConfiguration.class, "redisConnectionFactory", true, this, redisConnection);    // $NON-NLS-1$
+            ReflectionUtilsWraps.setField(redisConnection, "redisConnectionFactory", true, this);    // $NON-NLS-1$
         }
     }
 }

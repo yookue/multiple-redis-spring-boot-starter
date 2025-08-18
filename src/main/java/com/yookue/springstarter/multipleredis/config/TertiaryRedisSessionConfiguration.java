@@ -21,6 +21,7 @@ import jakarta.annotation.Nonnull;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBooleanProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -30,7 +31,7 @@ import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.session.data.redis.RedisIndexedSessionRepository;
 import org.springframework.session.data.redis.RedisSessionRepository;
-import com.yookue.commonplexus.springcondition.annotation.ConditionalOnAllProperties;
+import com.yookue.commonplexus.springcondition.annotation.ConditionalOnAllBooleanProperties;
 
 
 /**
@@ -39,11 +40,11 @@ import com.yookue.commonplexus.springcondition.annotation.ConditionalOnAllProper
  * @author David Hsing
  */
 @Configuration(proxyBeanMethods = false)
-@ConditionalOnAllProperties(value = {
-    @ConditionalOnProperty(prefix = "spring.multiple-redis", name = "enabled", havingValue = "true", matchIfMissing = true),
-    @ConditionalOnProperty(prefix = "spring.session", name = "store-type", havingValue = "redis", matchIfMissing = true),
-    @ConditionalOnProperty(prefix = TertiaryRedisAutoConfiguration.PROPERTIES_PREFIX, name = "session.enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnAllBooleanProperties(value = {
+    @ConditionalOnBooleanProperty(prefix = "spring.multiple-redis", name = "enabled", matchIfMissing = true),
+    @ConditionalOnBooleanProperty(prefix = TertiaryRedisAutoConfiguration.PROPERTIES_PREFIX, name = "session.enabled", matchIfMissing = true)
 })
+@ConditionalOnProperty(prefix = "spring.session", name = "store-type", havingValue = "redis", matchIfMissing = true)
 @ConditionalOnClass(value = {RedisOperations.class, RedisSessionRepository.class})
 @ConditionalOnBean(name = TertiaryRedisAutoConfiguration.OBJECT_REDIS_TEMPLATE)
 @AutoConfigureAfter(value = {SecondaryRedisSessionConfiguration.class, TertiaryRedisAutoConfiguration.class})

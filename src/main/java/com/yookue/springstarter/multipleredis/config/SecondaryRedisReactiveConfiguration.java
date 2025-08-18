@@ -22,9 +22,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBooleanProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.redis.RedisReactiveAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration;
@@ -44,7 +44,7 @@ import reactor.core.publisher.Flux;
  * @author David Hsing
  */
 @Configuration(proxyBeanMethods = false)
-@ConditionalOnProperty(prefix = "spring.multiple-redis", name = "enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnBooleanProperty(prefix = "spring.multiple-redis", name = "enabled", matchIfMissing = true)
 @ConditionalOnClass(value = {RedisOperations.class, Flux.class})
 @ConditionalOnBean(name = SecondaryRedisAutoConfiguration.CONNECTION_FACTORY, value = ReactiveRedisConnectionFactory.class)
 @AutoConfigureAfter(value = {PrimaryRedisReactiveConfiguration.class, SecondaryRedisAutoConfiguration.class})
@@ -55,12 +55,14 @@ public class SecondaryRedisReactiveConfiguration {
 
     @Bean(name = REACTIVE_REDIS_TEMPLATE)
     @ConditionalOnMissingBean(name = REACTIVE_REDIS_TEMPLATE)
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public ReactiveRedisTemplate<Object, Object> redisTemplate(@Qualifier(value = SecondaryRedisAutoConfiguration.CONNECTION_FACTORY) @Nonnull ReactiveRedisConnectionFactory factory, @Nonnull ResourceLoader loader) {
         return new RedisReactiveAutoConfiguration().reactiveRedisTemplate(factory, loader);
     }
 
     @Bean(name = REACTIVE_STRING_REDIS_TEMPLATE)
     @ConditionalOnMissingBean(name = REACTIVE_STRING_REDIS_TEMPLATE)
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public ReactiveStringRedisTemplate stringRedisTemplate(@Qualifier(value = SecondaryRedisAutoConfiguration.CONNECTION_FACTORY) @Nonnull ReactiveRedisConnectionFactory factory) {
         return new RedisReactiveAutoConfiguration().reactiveStringRedisTemplate(factory);
     }
