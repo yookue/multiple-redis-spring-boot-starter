@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Yookue Ltd. All rights reserved.
+ * Copyright (c) 2020 Unikue Ltd. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.yookue.springstarter.multipleredis.config;
+package cn.unikue.springstarter.multipleredis.config;
 
 
 import java.util.Objects;
@@ -61,50 +61,50 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yookue.commonplexus.springcondition.annotation.ConditionalOnAnyProperties;
-import com.yookue.commonplexus.springutil.util.JacksonRedisWraps;
-import com.yookue.commonplexus.springutil.util.RedisConfigWraps;
-import com.yookue.springstarter.multipleredis.facade.RedisTemplateCustomizer;
-import com.yookue.springstarter.multipleredis.facade.StringRedisTemplateCustomizer;
+import cn.unikue.commonplexus.springcondition.annotation.ConditionalOnAnyProperties;
+import cn.unikue.commonplexus.springutil.util.JacksonRedisWraps;
+import cn.unikue.commonplexus.springutil.util.RedisConfigWraps;
+import cn.unikue.springstarter.multipleredis.facade.RedisTemplateCustomizer;
+import cn.unikue.springstarter.multipleredis.facade.StringRedisTemplateCustomizer;
 import io.lettuce.core.resource.ClientResources;
 import io.lettuce.core.resource.DefaultClientResources;
 
 
 /**
- * Tertiary configuration for classic redis
+ * Secondary configuration for classic redis
  *
  * @author David Hsing
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnBooleanProperty(prefix = "spring.multiple-redis", name = "enabled", matchIfMissing = true)
 @ConditionalOnAnyProperties(value = {
-    @ConditionalOnProperty(prefix = TertiaryRedisAutoConfiguration.PROPERTIES_PREFIX, name = "url"),
-    @ConditionalOnProperty(prefix = TertiaryRedisAutoConfiguration.PROPERTIES_PREFIX, name = "host")
+    @ConditionalOnProperty(prefix = SecondaryRedisAutoConfiguration.PROPERTIES_PREFIX, name = "url"),
+    @ConditionalOnProperty(prefix = SecondaryRedisAutoConfiguration.PROPERTIES_PREFIX, name = "host")
 })
 @ConditionalOnClass(value = RedisOperations.class)
-@AutoConfigureAfter(value = SecondaryRedisAutoConfiguration.class)
+@AutoConfigureAfter(value = PrimaryRedisAutoConfiguration.class)
 @AutoConfigureBefore(value = {RedisAutoConfiguration.class, RedisReactiveAutoConfiguration.class, RedisRepositoriesAutoConfiguration.class})
-@Import(value = {TertiaryRedisAutoConfiguration.Entry.class, TertiaryRedisAutoConfiguration.Lettuce.class, TertiaryRedisAutoConfiguration.Jedis.class, TertiaryRedisAutoConfiguration.Stage.class})
-public class TertiaryRedisAutoConfiguration {
-    public static final String PROPERTIES_PREFIX = "spring.multiple-redis.tertiary";    // $NON-NLS-1$
-    public static final String REDIS_PROPERTIES = "tertiaryRedisProperties";    // $NON-NLS-1$
-    public static final String CONNECTION_DETAILS = "tertiaryRedisConnectionDetails";    // $NON-NLS-1$
-    public static final String STANDALONE_CONFIGURATION = "tertiaryRedisStandaloneConfiguration";    // $NON-NLS-1$
-    public static final String SENTINEL_CONFIGURATION = "tertiaryRedisSentinelConfiguration";    // $NON-NLS-1$
-    public static final String CLUSTER_CONFIGURATION = "tertiaryRedisClusterConfiguration";    // $NON-NLS-1$
-    public static final String SSL_BUNDLES = "tertiaryRedisSslBundles";    // $NON-NLS-1$
-    public static final String LETTUCE_CLIENT_CONFIGURATION_CUSTOMIZER = "tertiaryLettuceClientConfigurationCustomizer";    // $NON-NLS-1$
-    public static final String LETTUCE_CLIENT_OPTION_CUSTOMIZER = "tertiaryLettuceClientOptionCustomizer";    // $NON-NLS-1$
-    public static final String LETTUCE_CLIENT_RESOURCES = "tertiaryLettuceClientResources";    // $NON-NLS-1$
-    public static final String JEDIS_CLIENT_CUSTOMIZER = "tertiaryJedisClientCustomizer";    // $NON-NLS-1$
-    public static final String CONNECTION_FACTORY = "tertiaryRedisConnectionFactory";    // $NON-NLS-1$
-    public static final String OBJECT_REDIS_TEMPLATE = "tertiaryObjectRedisTemplate";    // $NON-NLS-1$
-    public static final String SESSION_REDIS_TEMPLATE = "tertiarySessionRedisTemplate";    // $NON-NLS-1$
-    public static final String STRING_REDIS_TEMPLATE = "tertiaryStringRedisTemplate";    // $NON-NLS-1$
+@Import(value = {SecondaryRedisAutoConfiguration.Entry.class, SecondaryRedisAutoConfiguration.Lettuce.class, SecondaryRedisAutoConfiguration.Jedis.class, SecondaryRedisAutoConfiguration.Stage.class})
+public class SecondaryRedisAutoConfiguration {
+    public static final String PROPERTIES_PREFIX = "spring.multiple-redis.secondary";    // $NON-NLS-1$
+    public static final String REDIS_PROPERTIES = "secondaryRedisProperties";    // $NON-NLS-1$
+    public static final String CONNECTION_DETAILS = "secondaryRedisConnectionDetails";    // $NON-NLS-1$
+    public static final String STANDALONE_CONFIGURATION = "secondaryRedisStandaloneConfiguration";    // $NON-NLS-1$
+    public static final String SENTINEL_CONFIGURATION = "secondaryRedisSentinelConfiguration";    // $NON-NLS-1$
+    public static final String CLUSTER_CONFIGURATION = "secondaryRedisClusterConfiguration";    // $NON-NLS-1$
+    public static final String SSL_BUNDLES = "secondaryRedisSslBundles";    // $NON-NLS-1$
+    public static final String LETTUCE_CLIENT_CONFIGURATION_CUSTOMIZER = "secondaryLettuceClientConfigurationCustomizer";    // $NON-NLS-1$
+    public static final String LETTUCE_CLIENT_OPTION_CUSTOMIZER = "secondaryLettuceClientOptionCustomizer";    // $NON-NLS-1$
+    public static final String LETTUCE_CLIENT_RESOURCES = "secondaryLettuceClientResources";    // $NON-NLS-1$
+    public static final String JEDIS_CLIENT_CUSTOMIZER = "secondaryJedisClientCustomizer";    // $NON-NLS-1$
+    public static final String CONNECTION_FACTORY = "secondaryRedisConnectionFactory";    // $NON-NLS-1$
+    public static final String OBJECT_REDIS_TEMPLATE = "secondaryObjectRedisTemplate";    // $NON-NLS-1$
+    public static final String SESSION_REDIS_TEMPLATE = "secondarySessionRedisTemplate";    // $NON-NLS-1$
+    public static final String STRING_REDIS_TEMPLATE = "secondaryStringRedisTemplate";    // $NON-NLS-1$
 
 
     /**
-     * Tertiary configuration for classic redis
+     * Secondary configuration for classic redis of entry
      *
      * @author David Hsing
      */
@@ -151,7 +151,7 @@ public class TertiaryRedisAutoConfiguration {
 
 
     /**
-     * Tertiary configuration for classic redis of lettuce
+     * Secondary configuration for classic redis of lettuce
      *
      * @author David Hsing
      */
@@ -183,7 +183,7 @@ public class TertiaryRedisAutoConfiguration {
 
 
     /**
-     * Tertiary configuration for classic redis of jedis
+     * Secondary configuration for classic redis of jedis
      *
      * @author David Hsing
      */
@@ -207,7 +207,7 @@ public class TertiaryRedisAutoConfiguration {
 
 
     /**
-     * Tertiary configuration for classic redis of stage
+     * Secondary configuration for classic redis of stage
      *
      * @author David Hsing
      */

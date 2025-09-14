@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Yookue Ltd. All rights reserved.
+ * Copyright (c) 2020 Unikue Ltd. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.yookue.springstarter.multipleredis.registrar;
+package cn.unikue.springstarter.multipleredis.registrar;
 
 
 import java.time.Duration;
@@ -35,23 +35,23 @@ import org.springframework.session.data.redis.config.annotation.SpringSessionRed
 import org.springframework.session.data.redis.config.annotation.web.http.RedisHttpSessionConfiguration;
 import org.springframework.util.StringUtils;
 import org.springframework.util.StringValueResolver;
-import com.yookue.commonplexus.javaseutil.enumeration.NumberOrderType;
-import com.yookue.commonplexus.springutil.util.BeanFactoryWraps;
-import com.yookue.commonplexus.springutil.util.ReflectionUtilsWraps;
-import com.yookue.springstarter.multipleredis.annotation.EnableMultipleRedisHttpSession;
-import com.yookue.springstarter.multipleredis.config.PrimaryRedisAutoConfiguration;
-import com.yookue.springstarter.multipleredis.config.SecondaryRedisAutoConfiguration;
-import com.yookue.springstarter.multipleredis.config.TertiaryRedisAutoConfiguration;
+import cn.unikue.commonplexus.javaseutil.enumeration.NumberOrderType;
+import cn.unikue.commonplexus.springutil.util.BeanFactoryWraps;
+import cn.unikue.commonplexus.springutil.util.ReflectionUtilsWraps;
+import cn.unikue.springstarter.multipleredis.annotation.EnableMultipleRedisHttpSession;
+import cn.unikue.springstarter.multipleredis.config.PrimaryRedisAutoConfiguration;
+import cn.unikue.springstarter.multipleredis.config.SecondaryRedisAutoConfiguration;
+import cn.unikue.springstarter.multipleredis.config.TertiaryRedisAutoConfiguration;
 import lombok.Getter;
 import lombok.Setter;
 
 
 /**
- * Configuration for {@link com.yookue.springstarter.multipleredis.annotation.EnableMultipleRedisHttpSession}
+ * Configuration for {@link cn.unikue.springstarter.multipleredis.annotation.EnableMultipleRedisHttpSession}
  *
  * @author David Hsing
  * @see org.springframework.session.data.redis.config.annotation.web.http.RedisHttpSessionConfiguration
- * @see com.yookue.springstarter.multipleredis.annotation.EnableMultipleRedisHttpSession
+ * @see cn.unikue.springstarter.multipleredis.annotation.EnableMultipleRedisHttpSession
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnBooleanProperty(prefix = "spring.multiple-redis", name = "enabled", matchIfMissing = true)

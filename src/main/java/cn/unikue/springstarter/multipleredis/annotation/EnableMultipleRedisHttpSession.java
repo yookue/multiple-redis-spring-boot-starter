@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.yookue.springstarter.multipleredis.annotation;
+package cn.unikue.springstarter.multipleredis.annotation;
 
 
 import java.lang.annotation.Documented;
@@ -30,8 +30,8 @@ import org.springframework.session.SaveMode;
 import org.springframework.session.Session;
 import org.springframework.session.SessionRepository;
 import org.springframework.session.data.redis.RedisIndexedSessionRepository;
-import com.yookue.commonplexus.javaseutil.enumeration.NumberOrderType;
-import com.yookue.springstarter.multipleredis.registrar.MultipleRedisHttpSessionRegistrar;
+import cn.unikue.commonplexus.javaseutil.enumeration.NumberOrderType;
+import cn.unikue.springstarter.multipleredis.registrar.MultipleRedisHttpSessionRegistrar;
 
 
 /**
@@ -40,7 +40,7 @@ import com.yookue.springstarter.multipleredis.registrar.MultipleRedisHttpSession
  * @author David Hsing
  * @see org.springframework.session.config.annotation.web.http.EnableSpringHttpSession
  * @see org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession
- * @see com.yookue.springstarter.multipleredis.registrar.MultipleRedisHttpSessionRegistrar
+ * @see cn.unikue.springstarter.multipleredis.registrar.MultipleRedisHttpSessionRegistrar
  * @reference "https://docs.spring.io/spring-session/reference/api.html"
  */
 @Retention(value = RetentionPolicy.RUNTIME)

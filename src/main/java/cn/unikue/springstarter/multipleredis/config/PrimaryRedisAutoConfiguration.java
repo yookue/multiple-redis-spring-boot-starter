@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Yookue Ltd. All rights reserved.
+ * Copyright (c) 2020 Unikue Ltd. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.yookue.springstarter.multipleredis.config;
+package cn.unikue.springstarter.multipleredis.config;
 
 
 import java.util.Objects;
@@ -61,12 +61,12 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yookue.commonplexus.springcondition.annotation.ConditionalOnAnyProperties;
-import com.yookue.commonplexus.springutil.constant.SpringBeanConst;
-import com.yookue.commonplexus.springutil.util.RedisConfigWraps;
-import com.yookue.commonplexus.springutil.util.JacksonRedisWraps;
-import com.yookue.springstarter.multipleredis.facade.RedisTemplateCustomizer;
-import com.yookue.springstarter.multipleredis.facade.StringRedisTemplateCustomizer;
+import cn.unikue.commonplexus.springcondition.annotation.ConditionalOnAnyProperties;
+import cn.unikue.commonplexus.springutil.constant.SpringBeanConst;
+import cn.unikue.commonplexus.springutil.util.RedisConfigWraps;
+import cn.unikue.commonplexus.springutil.util.JacksonRedisWraps;
+import cn.unikue.springstarter.multipleredis.facade.RedisTemplateCustomizer;
+import cn.unikue.springstarter.multipleredis.facade.StringRedisTemplateCustomizer;
 import io.lettuce.core.resource.ClientResources;
 import io.lettuce.core.resource.DefaultClientResources;
 

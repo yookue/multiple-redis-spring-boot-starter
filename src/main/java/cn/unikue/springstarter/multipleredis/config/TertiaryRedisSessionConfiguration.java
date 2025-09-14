@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Yookue Ltd. All rights reserved.
+ * Copyright (c) 2020 Unikue Ltd. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.yookue.springstarter.multipleredis.config;
+package cn.unikue.springstarter.multipleredis.config;
 
 
 import jakarta.annotation.Nonnull;
@@ -31,29 +31,29 @@ import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.session.data.redis.RedisIndexedSessionRepository;
 import org.springframework.session.data.redis.RedisSessionRepository;
-import com.yookue.commonplexus.springcondition.annotation.ConditionalOnAllBooleanProperties;
+import cn.unikue.commonplexus.springcondition.annotation.ConditionalOnAllBooleanProperties;
 
 
 /**
- * Secondary configuration for redis session
+ * Tertiary configuration for redis session
  *
  * @author David Hsing
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnAllBooleanProperties(value = {
     @ConditionalOnBooleanProperty(prefix = "spring.multiple-redis", name = "enabled", matchIfMissing = true),
-    @ConditionalOnBooleanProperty(prefix = SecondaryRedisAutoConfiguration.PROPERTIES_PREFIX, name = "session.enabled", matchIfMissing = true)
+    @ConditionalOnBooleanProperty(prefix = TertiaryRedisAutoConfiguration.PROPERTIES_PREFIX, name = "session.enabled", matchIfMissing = true)
 })
 @ConditionalOnProperty(prefix = "spring.session", name = "store-type", havingValue = "redis", matchIfMissing = true)
 @ConditionalOnClass(value = {RedisOperations.class, RedisSessionRepository.class})
-@ConditionalOnBean(name = SecondaryRedisAutoConfiguration.OBJECT_REDIS_TEMPLATE)
-@AutoConfigureAfter(value = {PrimaryRedisSessionConfiguration.class, SecondaryRedisAutoConfiguration.class})
-public class SecondaryRedisSessionConfiguration {
-    public static final String SESSION_REPOSITORY = "secondaryRedisIndexedSessionRepository";    // $NON-NLS-1$
+@ConditionalOnBean(name = TertiaryRedisAutoConfiguration.OBJECT_REDIS_TEMPLATE)
+@AutoConfigureAfter(value = {SecondaryRedisSessionConfiguration.class, TertiaryRedisAutoConfiguration.class})
+public class TertiaryRedisSessionConfiguration {
+    public static final String SESSION_REPOSITORY = "tertiaryRedisIndexedSessionRepository";    // $NON-NLS-1$
 
     @Bean(name = SESSION_REPOSITORY)
     @ConditionalOnMissingBean(name = SESSION_REPOSITORY, type = "org.springframework.session.SessionRepository")
-    public RedisIndexedSessionRepository sessionRepository(@Qualifier(value = SecondaryRedisAutoConfiguration.SESSION_REDIS_TEMPLATE) @Nonnull RedisTemplate<String, Object> template) {
+    public RedisIndexedSessionRepository sessionRepository(@Qualifier(value = TertiaryRedisAutoConfiguration.SESSION_REDIS_TEMPLATE) @Nonnull RedisTemplate<String, Object> template) {
         return new RedisIndexedSessionRepository(template);
     }
 }

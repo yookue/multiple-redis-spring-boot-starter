@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Yookue Ltd. All rights reserved.
+ * Copyright (c) 2020 Unikue Ltd. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.yookue.springstarter.multipleredis.config;
+package cn.unikue.springstarter.multipleredis.config;
 
 
 import jakarta.annotation.Nonnull;
@@ -36,9 +36,9 @@ import org.springframework.cache.interceptor.CacheResolver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
-import com.yookue.commonplexus.springcondition.annotation.ConditionalOnAllBooleanProperties;
-import com.yookue.commonplexus.springutil.util.RedisConfigWraps;
-import com.yookue.springstarter.cacheexpiry.resolver.impl.RedisExpiryCacheResolver;
+import cn.unikue.commonplexus.springcondition.annotation.ConditionalOnAllBooleanProperties;
+import cn.unikue.commonplexus.springutil.util.RedisConfigWraps;
+import cn.unikue.springstarter.cacheexpiry.resolver.impl.RedisExpiryCacheResolver;
 
 
 /**
@@ -55,7 +55,7 @@ import com.yookue.springstarter.cacheexpiry.resolver.impl.RedisExpiryCacheResolv
 @ConditionalOnBean(value = {CacheAspectSupport.class, CacheProperties.class})
 @ConditionalOnClass(value = CacheManager.class)
 @AutoConfigureAfter(value = {CacheAutoConfiguration.class, PrimaryRedisCacheConfiguration.class, SecondaryRedisAutoConfiguration.class})
-@AutoConfigureBefore(name = "com.yookue.springstarter.cacheexpiry.config.RedisExpiryCacheConfiguration")
+@AutoConfigureBefore(name = "cn.unikue.springstarter.cacheexpiry.config.RedisExpiryCacheConfiguration")
 public class SecondaryRedisCacheConfiguration {
     public static final String CACHE_MANAGER = "secondaryRedisCacheManager";    // $NON-NLS-1$
     public static final String CACHE_RESOLVER = "secondaryRedisCacheResolver";    // $NON-NLS-1$

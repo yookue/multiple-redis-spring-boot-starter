@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Yookue Ltd. All rights reserved.
+ * Copyright (c) 2020 Unikue Ltd. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.yookue.springstarter.multipleredis.config;
+package cn.unikue.springstarter.multipleredis.config;
 
 
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -29,26 +29,26 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.stereotype.Repository;
-import com.yookue.commonplexus.springcondition.annotation.ConditionalOnAllBooleanProperties;
-import com.yookue.commonplexus.springcondition.annotation.ConditionalOnAnnotation;
+import cn.unikue.commonplexus.springcondition.annotation.ConditionalOnAllBooleanProperties;
+import cn.unikue.commonplexus.springcondition.annotation.ConditionalOnAnnotation;
 
 
 /**
- * Tertiary configuration for redis repository
+ * Secondary configuration for redis repository
  *
  * @author David Hsing
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnAllBooleanProperties(value = {
     @ConditionalOnBooleanProperty(prefix = "spring.multiple-redis", name = "enabled", matchIfMissing = true),
-    @ConditionalOnBooleanProperty(prefix = TertiaryRedisAutoConfiguration.PROPERTIES_PREFIX, name = "repository.enabled")
+    @ConditionalOnBooleanProperty(prefix = SecondaryRedisAutoConfiguration.PROPERTIES_PREFIX, name = "repository.enabled")
 })
 @ConditionalOnClass(value = RedisOperations.class)
-@ConditionalOnBean(name = TertiaryRedisAutoConfiguration.CONNECTION_FACTORY)
-@ConditionalOnAnnotation(includeFilter = Repository.class, basePackage = TertiaryRedisRepositoryConfiguration.REPOSITORY_PACKAGE)
-@AutoConfigureAfter(value = {SecondaryRedisRepositoryConfiguration.class, TertiaryRedisAutoConfiguration.class})
+@ConditionalOnBean(name = SecondaryRedisAutoConfiguration.CONNECTION_FACTORY)
+@ConditionalOnAnnotation(includeFilter = Repository.class, basePackage = SecondaryRedisRepositoryConfiguration.REPOSITORY_PACKAGE)
+@AutoConfigureAfter(value = {PrimaryRedisRepositoryConfiguration.class, SecondaryRedisAutoConfiguration.class})
 @AutoConfigureBefore(value = {RedisAutoConfiguration.class, RedisReactiveAutoConfiguration.class, RedisRepositoriesAutoConfiguration.class})
-@EnableRedisRepositories(basePackages = TertiaryRedisRepositoryConfiguration.REPOSITORY_PACKAGE, redisTemplateRef = TertiaryRedisAutoConfiguration.OBJECT_REDIS_TEMPLATE)
-public class TertiaryRedisRepositoryConfiguration {
-    public static final String REPOSITORY_PACKAGE = "**.repository.tertiary.redis";    // $NON-NLS-1$
+@EnableRedisRepositories(basePackages = SecondaryRedisRepositoryConfiguration.REPOSITORY_PACKAGE, redisTemplateRef = SecondaryRedisAutoConfiguration.OBJECT_REDIS_TEMPLATE)
+public class SecondaryRedisRepositoryConfiguration {
+    public static final String REPOSITORY_PACKAGE = "**.repository.secondary.redis";    // $NON-NLS-1$
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Yookue Ltd. All rights reserved.
+ * Copyright (c) 2020 Unikue Ltd. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.yookue.springstarter.multipleredis.config;
+package cn.unikue.springstarter.multipleredis.config;
 
 
 import jakarta.annotation.Nonnull;
@@ -30,6 +30,7 @@ import org.springframework.boot.autoconfigure.data.redis.RedisReactiveAutoConfig
 import org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.data.redis.connection.ReactiveRedisConnectionFactory;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
@@ -39,29 +40,34 @@ import reactor.core.publisher.Flux;
 
 
 /**
- * Tertiary configuration for reactive redis
+ * Primary configuration for reactive redis
  *
  * @author David Hsing
+ * @see org.springframework.boot.autoconfigure.data.redis.RedisReactiveAutoConfiguration
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnBooleanProperty(prefix = "spring.multiple-redis", name = "enabled", matchIfMissing = true)
 @ConditionalOnClass(value = {RedisOperations.class, Flux.class})
-@ConditionalOnBean(name = TertiaryRedisAutoConfiguration.CONNECTION_FACTORY, value = ReactiveRedisConnectionFactory.class)
-@AutoConfigureAfter(value = {SecondaryRedisReactiveConfiguration.class, TertiaryRedisAutoConfiguration.class})
+@ConditionalOnBean(name = PrimaryRedisAutoConfiguration.CONNECTION_FACTORY, value = ReactiveRedisConnectionFactory.class)
+@AutoConfigureAfter(value = PrimaryRedisAutoConfiguration.class)
 @AutoConfigureBefore(value = {RedisAutoConfiguration.class, RedisReactiveAutoConfiguration.class, RedisRepositoriesAutoConfiguration.class})
-public class TertiaryRedisReactiveConfiguration {
-    public static final String REACTIVE_REDIS_TEMPLATE = "tertiaryReactiveRedisTemplate";    // $NON-NLS-1$
-    public static final String REACTIVE_STRING_REDIS_TEMPLATE = "tertiaryReactiveStringRedisTemplate";    // $NON-NLS-1$
+public class PrimaryRedisReactiveConfiguration {
+    public static final String DEFAULT_REACTIVE_REDIS_TEMPLATE = "reactiveRedisTemplate";    // $NON-NLS-1$
+    public static final String DEFAULT_REACTIVE_STRING_REDIS_TEMPLATE = "reactiveStringRedisTemplate";    // $NON-NLS-1$
+    public static final String REACTIVE_REDIS_TEMPLATE = "primaryReactiveRedisTemplate";    // $NON-NLS-1$
+    public static final String REACTIVE_STRING_REDIS_TEMPLATE = "primaryReactiveStringRedisTemplate";    // $NON-NLS-1$
 
-    @Bean(name = REACTIVE_REDIS_TEMPLATE)
+    @Primary
+    @Bean(name = {REACTIVE_REDIS_TEMPLATE, DEFAULT_REACTIVE_REDIS_TEMPLATE})
     @ConditionalOnMissingBean(name = REACTIVE_REDIS_TEMPLATE)
-    public ReactiveRedisTemplate<Object, Object> redisTemplate(@Qualifier(value = TertiaryRedisAutoConfiguration.CONNECTION_FACTORY) @Nonnull ReactiveRedisConnectionFactory factory, @Nonnull ResourceLoader loader) {
+    public ReactiveRedisTemplate<Object, Object> redisTemplate(@Qualifier(value = PrimaryRedisAutoConfiguration.CONNECTION_FACTORY) @Nonnull ReactiveRedisConnectionFactory factory, @Nonnull ResourceLoader loader) {
         return new RedisReactiveAutoConfiguration().reactiveRedisTemplate(factory, loader);
     }
 
-    @Bean(name = REACTIVE_STRING_REDIS_TEMPLATE)
+    @Primary
+    @Bean(name = {REACTIVE_STRING_REDIS_TEMPLATE, DEFAULT_REACTIVE_STRING_REDIS_TEMPLATE})
     @ConditionalOnMissingBean(name = REACTIVE_STRING_REDIS_TEMPLATE)
-    public ReactiveStringRedisTemplate stringRedisTemplate(@Qualifier(value = TertiaryRedisAutoConfiguration.CONNECTION_FACTORY) @Nonnull ReactiveRedisConnectionFactory factory) {
+    public ReactiveStringRedisTemplate stringRedisTemplate(@Qualifier(value = PrimaryRedisAutoConfiguration.CONNECTION_FACTORY) @Nonnull ReactiveRedisConnectionFactory factory) {
         return new RedisReactiveAutoConfiguration().reactiveStringRedisTemplate(factory);
     }
 }
